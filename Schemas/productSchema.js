@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema({
-    image: String,
+    email: String,
+    photoUrl: String,
     sellerName: String,
     productName: String,
-    orignialPrice: String,
+    originalPrice: String,
     resalePrice: String,
     condition: String,
     category: String,
@@ -12,6 +13,7 @@ const productSchema = mongoose.Schema({
     using: String,
     date: Date,
     booked: String,
+    location: String,
 })
 
 module.exports = productSchema;

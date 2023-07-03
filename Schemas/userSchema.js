@@ -9,9 +9,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    role: String,
+    verified: Boolean,
     userType: {
         type: String,
-        required: true,
+        default: 'buyer',
     }
 })
 

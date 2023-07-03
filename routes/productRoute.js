@@ -3,13 +3,22 @@ const express = require('express');
 const router = express.Router();
 const productSchema = require('../Schemas/productSchema');
 const Product = new mongoose.model("Product", productSchema);
+const verifyToken = require('../middlewares/verifyToken');
 
 // post a product to database
 // go the AddProduct component to see this api
-router.post('/', async (req,res) => {
+router.post('/', async (req, res) => {
+   try {
     const product = new Product(req.body);
-    const data = await product.save();
-    res.json(data);
+    const result = await product.save();
+    res.send({
+        data: result,
+        message: 'you successfully post your product'
+    });
+   }
+   catch {
+    res.status(500).send('something went wrong')
+   }
 })
 
 // get product category wise
@@ -21,15 +30,25 @@ router.get('/category', async (req,res) => {
 
 // get product by current user email
 // go to the MyProducts component to see this api
-router.get('/my', async (req,res) => {
-    const data = await Product.find({email: req.query.email});
-    res.json(data)
+router.get('/my', verifyToken, async (req,res) => {
+    const decodedEmail = req.decoded.email;
+    const email = req.query.email;
+    if(email !== decodedEmail){
+        res.status(401).send({message: 'forbidden access'})
+    }
+    else{
+        const data = await Product.find({email: email});
+        res.json(data)
+    }
+   
 })
 
 // delete product by current user
 // go to the MyProducts component to see this api
 router.delete('/:id', async (req,res) => {
+    console.log(req.params.id);
     const data = await Product.deleteOne({_id: req.params.id});
+    console.log(data);
     res.json(data)
 })
 
